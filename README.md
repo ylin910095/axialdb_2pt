@@ -40,7 +40,7 @@ Usually, these parameters are put into an yaml file and can be read to python di
 
 `gather_dataset` will return two python dictionaries. Both dictionaries have keys given by the returned string of `generate_tag_baryon` according to the correlators you query. These keys are called datatags and are used extensively to identity the correlators within the program. 
 
-For a given key, the first dictionary will return a list of raw correlator quried for a given configuration from the database __AFTER__ blocking and time source averaging. The configuration information is given by the second dictionary. The configuration is a string that contains series, trajectory, and time source for the given correlator. 
+For a given key, the first dictionary will return a list of raw correlator queried for a given configuration from the database __AFTER__ blocking and time source averaging. The configuration information is given by the second dictionary. The configuration is a string that contains series, trajectory, and time source for the given correlator. 
 
 An example will be 'a00110_t036+a00115_t038'. If blocking or time source averaging, the string can be separated by '+' character. In this case, we are blocking two configurations: series a, trajectory 110, time source 36 and series a, trajectory 115, time source 38. 
 
