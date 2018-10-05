@@ -1,10 +1,11 @@
 import time
-import gvar,yaml
+import yaml
 import os
 import pickle
 import numpy as np
 from corr_db import *
 import sys
+
 #ordered direction of corner wall source to be used later by other modules
 cw_dir_list = ['0','x','y','xy','z','zx','yz','xyz']
 
@@ -196,7 +197,7 @@ def gather_dataset(input_dict):
     Output:
         dictionary with raw data with datatags as keys 
     """
-    dlist_dict = gvar.BufferDict() # Storage for all data
+    dlist_dict = dict() 
     meta_dict_all = dict()
     # First construct all datatags based on input_dict
     input_dict['datatag_list'] = []

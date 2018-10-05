@@ -71,23 +71,6 @@ def generate_tag_baryon(src_irrep, sink_irrep, src_class, sink_class, mom, mass,
 
     return group_construct + mom_construct + mass_construct + ensemble
 
-def generate_tag_meson(spin, taste, mom, mass, ensemble, rw=False):
-    """
-    same as above but for mesons
-    """
-    #assume momentum are same for all two if string provided
-    if isinstance(mom, str):
-        if len(mom) != 2:
-            raise
-        mom = (mom,mom)
-    group_construct = '%s-%s_' %(spin,taste)
-    mom_construct = 'p%s-p%s_'%(mom[0], mom[1])
-    mass_construct = 'm%s-m%s_'%(mass,mass) #assume same masses for all
-    if rw:
-        return group_construct + mom_construct + mass_construct + ensemble +'_rw'
-    else:
-        return group_construct + mom_construct + mass_construct + ensemble
-
 def parse_tag_baryon(datatag):
     """
     Inverse of generate_tag. Given datatag, return library with keys of
@@ -113,36 +96,6 @@ def parse_tag_baryon(datatag):
     data_dict['mom']        = mom
     data_dict['mass']       = mass
     data_dict['ensemble']   = ensemble
-    return data_dict
-
-def parse_tag_meson(datatag):
-    """
-    same as baryon but for meson parsing
-    """
-    datatag_split   = datatag.split('_')
-    group_construct = datatag_split[0]
-    mom_construct   = datatag_split[1]
-    mass_construct  = datatag_split[2]
-    ensemble        = datatag_split[3]
-    if datatag.endswith('_rw'):
-        rw = True
-    else:
-        rw = False
-
-    spin       = (group_construct.split('-'))[0]
-    taste      = (group_construct.split('-'))[1]
-    mom0       = ((mom_construct.split('-'))[0])[1:]
-    mom1       = ((mom_construct.split('-'))[1])[1:]
-    mom        = (mom0, mom1)
-    mass       = float(((mass_construct.split('-'))[0])[1:])
-
-    data_dict = dict()
-    data_dict['spin']       = spin
-    data_dict['taste']      = taste
-    data_dict['mom']        = mom
-    data_dict['mass']       = mass
-    data_dict['ensemble']   = ensemble
-    data_dict['rw']         = rw
     return data_dict
 
 ########################################################################
