@@ -1,0 +1,12 @@
+# Location of database
+db_name: /home/ylin/axial_test/axial_db/databases/l4864f211b600m001907m05252m6382-axial-baryon2pt.sqlite
+# Location of data cache 
+data_dir: /home/ylin/axial_test/axial_db/cache/
+ensemble: l4864f211b600m001907m05252m6382
+mass: 0.001907 # Light quarks mass
+op_irrep: "16" # Which irrep to gather? 16, 8m, 8p
+sink_class_list: [2, 41, 61] # Sink operator class list
+src_class_list: [2, 41, 61] # Source operator class list
+blocking: 2
+avg_tsrc: True # For 0.12fm, there is one source so this does nothing.
+overwrite: True # Overwrite cache data file?d
