@@ -13,7 +13,7 @@ l6496f211b630m0012m0363m432
 
 The correlators are based on the operators found TABLE VIII (or equivalently for isospin doublet nucleon, TABLE VI,) of https://arxiv.org/abs/hep-lat/0611023
 
-In particular, the source/sink operator we constructed are characterized by irreducible representations (16, 8^+, or 8^-) and classes
+In particular, the source/sink operators we constructed are characterized by irreducible representations (16, 8^+, or 8^-) and classes
 
 ## Usage
 
