@@ -51,7 +51,7 @@ A typical usage will look something like
 from corr_db import *
 from gather_data import *
 
-yamlfn = "./location/of/yaml/test.yaml/" 
+yamlfn = "./location/of/yaml/test.yaml" 
 input_dict = readin_stream(yamlfn) 
 data_dict, meta_dict = gather_dataset(input_dict) 
 
