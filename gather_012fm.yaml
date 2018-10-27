@@ -7,6 +7,6 @@ mass: 0.001907 # Light quarks mass
 op_irrep: "16" # Which irrep to gather? 16, 8m, 8p
 sink_class_list: [2, 41, 61] # Sink operator class list
 src_class_list: [2, 41, 61] # Source operator class list
-blocking: 2
-avg_tsrc: True # For 0.12fm, there is one source so this does nothing.
+blocking: 1
+avg_tsrc: False 
 overwrite: True # Overwrite cache data file?d
