@@ -9,4 +9,4 @@ sink_class_list: [2, 41, 61] # Sink operator class list
 src_class_list: [2, 41, 61] # Source operator class list
 blocking: 1
 avg_tsrc: False 
-overwrite: True # Overwrite cache data file?d
+overwrite: True # Overwrite cache data file?
