@@ -78,17 +78,21 @@ def main():
     default_dict = readin_stream(sys.argv[1])
     gather_dataset(default_dict)
 
-def gather_data(datatag, input_dict):
+def gather_data(datatag, input_dict, out_format="gpl"):
     """
     Gather the set of data given by datatag.
     If data cache is found at directory `output_dir` and `input_dict`
     requires no overwrite, it will read it directly without queuing 
-    the database; otherwise, it will dump pickle files to 
-    `output_dir`
+    the database; otherwise, it will dump files to 
+    `output_dir`. The out_format accepts either `gpl` or `pickle`
+    that determines the output format.
 
     Output:
         dictionary with raw data with datatags as keys 
     """
+    if out_format != "gpl" and out_format != "pickle":
+        raise ValueError("out_format needs to be gpl or pickle!")
+
     #tagging data for internal identification within the fitter
     key_list = _generate_correlator_keys_baryon(datatag, input_dict)
     print "datatag: %s" %(datatag)
@@ -99,10 +103,10 @@ def gather_data(datatag, input_dict):
     output_dir = input_dict['data_dir']
     save_name = output_dir + '/' + 'raw_' + datatag + '_' + 'baryon' +\
                 "_tsrcavg" + str(int(input_dict['avg_tsrc'])) + "_blocking" + str(input_dict['blocking']) +\
-                ".pickle" #use datatag as file name
+                ".%s"%out_format #use datatag as file name
     meta_save_name = output_dir + '/' + 'meta_' + datatag + '_' + 'baryon' +\
                      "_tsrcavg" + str(int(input_dict['avg_tsrc'])) + "_blocking" + str(input_dict['blocking']) +\
-                     '.pickle' 
+                     '.%s'%out_format 
     #overwriting warning
     if (os.path.isfile(save_name) is False or os.path.isfile(meta_save_name) is False) or (input_dict['overwrite'] is True):
         if input_dict['overwrite'] and os.path.isfile(save_name):
@@ -168,22 +172,31 @@ def gather_data(datatag, input_dict):
         
         if len(meta_info) != len(list(dlist)):
             raise ValueError("Inconsistent length between meta_info and dlist!")
-
-        # Dump to pickle cache file
         fio = open(save_name, 'wb')
         fio_meta = open(meta_save_name, 'wb')
-        pickle.dump(data_dict, fio)
-        pickle.dump(meta_dict, fio_meta)
+        # Dump to pickle cache file
+        if out_format == "pickle":
+            pickle.dump(data_dict, fio)
+            pickle.dump(meta_dict, fio_meta)
+        elif out_format == "gpl":
+            dump_gpl(data_dict, meta_dict, fio, fio_meta)
         fio.close()
         fio_meta.close()
         print 'data file saved: %s' %(save_name)
         print 'meta file saved: %s' %(meta_save_name)
     else: #overwrite == False
+        fio = open(save_name,'r')
+        fio_meta = open(meta_save_name,'r')
         #load the file if found in directory
         print 'Loading existing file: %s ... ' %save_name
         print 'Loading existing meta: %s ... ' %meta_save_name
-        data_dict =  pickle.load(open(save_name,'r'))
-        meta_dict =  pickle.load(open(meta_save_name,'r'))
+        if out_format == "pickle":
+            data_dict =  pickle.load(fio)
+            meta_dict =  pickle.load(fio_meta)
+        elif out_format == "gpl":
+            data_dict, meta_dict = load_gpl(fio, fio_meta)
+        fio.close()
+        fio_meta.close()
     return data_dict, meta_dict
 
 def gather_dataset(input_dict):
@@ -218,5 +231,43 @@ def gather_dataset(input_dict):
 
     return dlist_dict, meta_dict_all
 
+def dump_gpl(data_dict, meta_dict, fio, fio_meta):
+    """
+    Dump correlators and meta information to `fio` and `fio_meta` text files
+    that have white space separating each timeslice and newline separating
+    each measurements
+    """
+    if len(data_dict) != 1:
+        raise ValueError("data_dict should only have one key!")
+    for datatag in data_dict:
+        # Write data
+        for iconfig in data_dict[datatag]:
+            fio.write(datatag + " ") # write datatag
+            strlist = ["%.15e"%x for x in iconfig]
+            strout = " ".join(strlist) + "\n"
+            fio.write(strout)
+        # Write meta information
+        for imeta in meta_dict[datatag]:
+            fio_meta.write("%s\n"%imeta)
+
+def load_gpl(fio, fio_meta):
+    """
+    Load the text files created by `dump_txt`. Return a `data_dict` and 
+    `meta_dict`
+    """
+    dat_lines = [(line.rstrip('\n')).split(" ") for line in fio]
+    meta_lines = [(line.rstrip('\n')).split(" ") for line in fio_meta]
+    if len(dat_lines) != len(meta_lines):
+        raise ValueError("Mistmatch in number of lines for data and metadata!")
+    datatag = (dat_lines[0])[0] # all files should contain one datatag
+    data_dict = {datatag:[]}
+    meta_dict = {datatag:[]}
+    for datl,metal in zip(dat_lines, meta_lines):
+        if datl[0] != datatag:
+            raise ValueError("There are more than one datatag for gpl files!")
+        data_dict[datatag].append([float(x) for x in datl[1:]])
+        meta_dict[datatag].append(metal[0])
+    return data_dict, meta_dict
+        
 if __name__ == '__main__':
     main()
