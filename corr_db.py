@@ -233,8 +233,9 @@ class Lattice_Corrlator():
                 and (counter%self.no_tsrc != 0)):
                 # Revert counter to erase this particular trajectory
                 for revert_indx, _tmp in enumerate(_hold_configId):
-                    if _tmp.startswith(last_series_traj):
-                        break
+                    if last_series_traj != None:
+                        if _tmp.startswith(last_series_traj):
+                            break
                 _hold_configId = _hold_configId[:revert_indx]
                 counter -= revert_indx
 
