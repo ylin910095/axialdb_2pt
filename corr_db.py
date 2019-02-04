@@ -230,12 +230,12 @@ class Lattice_Corrlator():
             # Skip particular trajectory if we cannot find enough tsrc
             if ((counter%self.no_tsrc != self.no_tsrc-1)
                 and (current_series_traj != last_series_traj)
+                and (last_series_traj) != None 
                 and (counter%self.no_tsrc != 0)):
                 # Revert counter to erase this particular trajectory
                 for revert_indx, _tmp in enumerate(_hold_configId):
-                    if last_series_traj != None:
-                        if _tmp.startswith(last_series_traj):
-                            break
+                    if _tmp.startswith(last_series_traj):
+                        break
                 _hold_configId = _hold_configId[:revert_indx]
                 counter -= revert_indx
 
